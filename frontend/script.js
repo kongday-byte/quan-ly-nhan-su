@@ -107,20 +107,32 @@ async function apiRequest(url, options = {}) {
             },
         };
 
+        console.log('Making API request to:', url, 'with options:', options);
+        
         const response = await fetch(url, { ...defaultOptions, ...options });
-        const data = await response.json();
-
-        hideLoading();
-
+        
+        console.log('API Response status:', response.status);
+        
         if (!response.ok) {
-            throw new Error(data.message || `HTTP error! status: ${response.status}`);
+            const errorText = await response.text();
+            console.error('API Error response:', errorText);
+            throw new Error(`HTTP ${response.status}: ${errorText}`);
         }
-
+        
+        const data = await response.json();
+        console.log('API Response data:', data);
+        
+        hideLoading();
         return data;
     } catch (error) {
         hideLoading();
         console.error('API Request Error:', error);
-        showToast(`Lỗi API: ${error.message}`, 'error');
+        
+        if (error.name === 'TypeError' && error.message.includes('fetch')) {
+            showToast('Không thể kết nối với server. Hãy kiểm tra backend đã chạy tại http://localhost:3001', 'error');
+        } else {
+            showToast(`Lỗi API: ${error.message}`, 'error');
+        }
         throw error;
     }
 }
@@ -497,3 +509,4 @@ window.FritProject = {
 
 console.log('🚀 FritProject Frontend loaded successfully!');
 console.log('💡 Available debug functions:', Object.keys(window.FritProject));
+

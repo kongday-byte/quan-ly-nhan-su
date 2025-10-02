@@ -30,3 +30,4 @@ router.delete('/:id', userController.deleteUser);
 router.patch('/:id/status', userController.updateUserStatus);
 
 module.exports = router;
+

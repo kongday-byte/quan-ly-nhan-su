@@ -186,3 +186,4 @@ Distributed under the MIT License. See `LICENSE` for more information.
 FritProject Team - fritproject@example.com
 
 Project Link: [https://github.com/fritproject/backend](https://github.com/fritproject/backend)
+

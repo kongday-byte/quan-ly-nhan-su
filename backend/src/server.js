@@ -27,13 +27,13 @@ const NODE_ENV = process.env.NODE_ENV || 'development';
 // Security headers
 app.use(helmet());
 
-// CORS configuration
-const corsOptions = {
-  origin: process.env.FRONTEND_URL || 'http://localhost:3000',
-  credentials: true,
-  optionsSuccessStatus: 200
-};
-app.use(cors(corsOptions));
+// CORS configuration - Allow all origins for development
+app.use(cors({
+  origin: '*', // Allow all origins
+  methods: ['GET', 'POST', 'PUT', 'DELETE', 'PATCH', 'OPTIONS'],
+  allowedHeaders: ['Content-Type', 'Authorization'],
+  credentials: false // Set to false when using origin: '*'
+}));
 
 // Rate limiting
 const limiter = rateLimit({
@@ -226,3 +226,4 @@ process.on('unhandledRejection', (reason, promise) => {
 });
 
 module.exports = app;
+
