@@ -1,0 +1,2 @@
+# Dự án Quản lý Công việc
+Đây là dự án cá nhân để học GitHub và phát triển ứng dụng quản lý công việc cho nhóm nhỏ.

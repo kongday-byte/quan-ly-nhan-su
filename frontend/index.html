@@ -1,0 +1,225 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>FritProject - Quản lý User</title>
+    <link rel="stylesheet" href="styles.css">
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
+</head>
+<body>
+    <!-- Header -->
+    <header class="header">
+        <div class="container">
+            <div class="logo">
+                <i class="fas fa-users"></i>
+                <h1>FritProject</h1>
+            </div>
+            <nav class="nav">
+                <button class="nav-btn active" data-tab="users">
+                    <i class="fas fa-users"></i> Users
+                </button>
+                <button class="nav-btn" data-tab="add-user">
+                    <i class="fas fa-plus"></i> Thêm User
+                </button>
+                <button class="nav-btn" data-tab="api-test">
+                    <i class="fas fa-code"></i> Test API
+                </button>
+            </nav>
+        </div>
+    </header>
+
+    <!-- Main Content -->
+    <main class="main">
+        <div class="container">
+            <!-- Users Tab -->
+            <section id="users-tab" class="tab-content active">
+                <div class="section-header">
+                    <h2><i class="fas fa-users"></i> Danh sách Users</h2>
+                    <button id="refresh-btn" class="btn btn-secondary">
+                        <i class="fas fa-sync-alt"></i> Làm mới
+                    </button>
+                </div>
+
+                <!-- Search & Filter -->
+                <div class="search-section">
+                    <div class="search-box">
+                        <i class="fas fa-search"></i>
+                        <input type="text" id="search-input" placeholder="Tìm kiếm theo tên hoặc email...">
+                    </div>
+                    <select id="status-filter">
+                        <option value="">Tất cả trạng thái</option>
+                        <option value="active">Active</option>
+                        <option value="inactive">Inactive</option>
+                    </select>
+                </div>
+
+                <!-- Users Table -->
+                <div class="table-container">
+                    <table class="users-table">
+                        <thead>
+                            <tr>
+                                <th>ID</th>
+                                <th>Tên</th>
+                                <th>Email</th>
+                                <th>Số điện thoại</th>
+                                <th>Trạng thái</th>
+                                <th>Ngày tạo</th>
+                                <th>Hành động</th>
+                            </tr>
+                        </thead>
+                        <tbody id="users-tbody">
+                            <!-- Users will be loaded here -->
+                        </tbody>
+                    </table>
+                </div>
+
+                <!-- Loading & Empty States -->
+                <div id="loading" class="loading hidden">
+                    <i class="fas fa-spinner fa-spin"></i>
+                    <p>Đang tải dữ liệu...</p>
+                </div>
+
+                <div id="empty-state" class="empty-state hidden">
+                    <i class="fas fa-users-slash"></i>
+                    <h3>Không có users nào</h3>
+                    <p>Hãy thêm user đầu tiên của bạn!</p>
+                </div>
+            </section>
+
+            <!-- Add User Tab -->
+            <section id="add-user-tab" class="tab-content">
+                <div class="section-header">
+                    <h2><i class="fas fa-plus"></i> Thêm User Mới</h2>
+                </div>
+
+                <form id="add-user-form" class="user-form">
+                    <div class="form-group">
+                        <label for="user-name">
+                            <i class="fas fa-user"></i> Tên đầy đủ *
+                        </label>
+                        <input type="text" id="user-name" required placeholder="Nhập tên đầy đủ">
+                    </div>
+
+                    <div class="form-group">
+                        <label for="user-email">
+                            <i class="fas fa-envelope"></i> Email *
+                        </label>
+                        <input type="email" id="user-email" required placeholder="Nhập địa chỉ email">
+                    </div>
+
+                    <div class="form-group">
+                        <label for="user-phone">
+                            <i class="fas fa-phone"></i> Số điện thoại
+                        </label>
+                        <input type="tel" id="user-phone" placeholder="Nhập số điện thoại">
+                    </div>
+
+                    <div class="form-actions">
+                        <button type="submit" class="btn btn-primary">
+                            <i class="fas fa-plus"></i> Thêm User
+                        </button>
+                        <button type="reset" class="btn btn-secondary">
+                            <i class="fas fa-times"></i> Hủy
+                        </button>
+                    </div>
+                </form>
+            </section>
+
+            <!-- API Test Tab -->
+            <section id="api-test-tab" class="tab-content">
+                <div class="section-header">
+                    <h2><i class="fas fa-code"></i> Test API Endpoints</h2>
+                </div>
+
+                <div class="api-test-section">
+                    <div class="api-endpoint">
+                        <h3>Health Check</h3>
+                        <button class="btn btn-info" onclick="testHealthCheck()">
+                            <i class="fas fa-heartbeat"></i> Test Health
+                        </button>
+                    </div>
+
+                    <div class="api-endpoint">
+                        <h3>API Info</h3>
+                        <button class="btn btn-info" onclick="testApiInfo()">
+                            <i class="fas fa-info-circle"></i> Get API Info
+                        </button>
+                    </div>
+
+                    <div class="api-endpoint">
+                        <h3>Test POST Data</h3>
+                        <button class="btn btn-info" onclick="testPostData()">
+                            <i class="fas fa-paper-plane"></i> Test POST
+                        </button>
+                    </div>
+                </div>
+
+                <div class="api-response">
+                    <h3>API Response:</h3>
+                    <pre id="api-response-content">Chưa có response nào...</pre>
+                </div>
+            </section>
+        </div>
+    </main>
+
+    <!-- Modal for Edit User -->
+    <div id="edit-modal" class="modal hidden">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h3><i class="fas fa-edit"></i> Chỉnh sửa User</h3>
+                <button class="modal-close">&times;</button>
+            </div>
+            <form id="edit-user-form" class="user-form">
+                <input type="hidden" id="edit-user-id">
+                
+                <div class="form-group">
+                    <label for="edit-user-name">
+                        <i class="fas fa-user"></i> Tên đầy đủ *
+                    </label>
+                    <input type="text" id="edit-user-name" required>
+                </div>
+
+                <div class="form-group">
+                    <label for="edit-user-email">
+                        <i class="fas fa-envelope"></i> Email *
+                    </label>
+                    <input type="email" id="edit-user-email" required>
+                </div>
+
+                <div class="form-group">
+                    <label for="edit-user-phone">
+                        <i class="fas fa-phone"></i> Số điện thoại
+                    </label>
+                    <input type="tel" id="edit-user-phone">
+                </div>
+
+                <div class="form-group">
+                    <label for="edit-user-status">
+                        <i class="fas fa-toggle-on"></i> Trạng thái
+                    </label>
+                    <select id="edit-user-status">
+                        <option value="active">Active</option>
+                        <option value="inactive">Inactive</option>
+                    </select>
+                </div>
+
+                <div class="form-actions">
+                    <button type="submit" class="btn btn-primary">
+                        <i class="fas fa-save"></i> Cập nhật
+                    </button>
+                    <button type="button" class="btn btn-secondary modal-close">
+                        <i class="fas fa-times"></i> Hủy
+                    </button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <!-- Toast Notifications -->
+    <div id="toast-container"></div>
+
+    <!-- Scripts -->
+    <script src="script.js"></script>
+</body>
+</html>
