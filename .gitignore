@@ -140,6 +140,14 @@ venv.bak/
 *.swo
 *~
 
+# Python files (not related to this web project)
+*.py
+__pycache__/
+*.pyc
+
+# Thor Client
+.thorclient/
+
 # OS generated files
 .DS_Store
 .DS_Store?
